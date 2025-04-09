@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdnlgsd3xam6n"]
+
+[ext_resource type="Script" uid="uid://dmfg13slqjwk1" path="res://Weapon/Lazer.gd" id="1_7emi2"]
+[ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="1_v5vni"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5vni"]
+size = Vector2(121, 2)
+
+[node name="Lazer" type="Area2D"]
+script = ExtResource("1_7emi2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(60.5, 0)
+shape = SubResource("RectangleShape2D_v5vni")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0.00304413, -0.00714302)
+rotation = 1.57082
+scale = Vector2(2, 20)
+texture = ExtResource("1_v5vni")
+offset = Vector2(-0.494243, -2.0671)
+hframes = 5
+vframes = 2
+frame = 8
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
