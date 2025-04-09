@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c28mcfkcjobax" path="res://Player.gd" id="1_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://bv5e3klb0v38v" path="res://Assets/rp_player_bottom.png" id="2_kne1u"]
-[ext_resource type="Texture2D" uid="uid://4gcrslsq4yvn" path="res://Assets/rp_player_top.png" id="3_e80uo"]
+[ext_resource type="Texture2D" uid="uid://ct5kfrmpuu26a" path="res://Assets/rp_gun_bullet (1).png" id="4_cxr5p"]
 [ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="4_e80uo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
@@ -59,14 +59,17 @@ frame_progress = 0.334584
 visible = false
 position = Vector2(0.0675647, -0.13513)
 scale = Vector2(0.683, 0.74)
-texture = ExtResource("3_e80uo")
+texture = ExtResource("4_e80uo")
 offset = Vector2(3.8147e-06, 6.24223e-06)
+hframes = 5
+vframes = 2
 
 [node name="MachineGunSprite" type="Sprite2D" parent="Head"]
 visible = false
-position = Vector2(7.27596e-12, 0)
+position = Vector2(-18.7491, 9.80692)
 scale = Vector2(0.68, 0.74)
-texture = ExtResource("4_e80uo")
+texture = ExtResource("4_cxr5p")
+offset = Vector2(27.5722, -13.2526)
 hframes = 5
 vframes = 2
 frame = 3
@@ -81,9 +84,10 @@ vframes = 2
 frame = 1
 
 [node name="ShotgunSprite" type="Sprite2D" parent="Head"]
+visible = false
 position = Vector2(7.27596e-12, 0)
 scale = Vector2(0.68, 0.74)
-texture = ExtResource("4_e80uo")
+texture = ExtResource("4_cxr5p")
 hframes = 5
 vframes = 2
 frame = 2

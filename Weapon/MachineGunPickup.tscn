@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2qi6u0yrwvpe"]
 
 [ext_resource type="Script" uid="uid://ct1y6miy5k0p" path="res://Weapon/MachineGunPickup.gd" id="1_uf4bf"]
-[ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="2_gqewq"]
+[ext_resource type="Texture2D" uid="uid://ct5kfrmpuu26a" path="res://Assets/rp_gun_bullet (1).png" id="2_gqewq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_svxeu"]
 radius = 5.0

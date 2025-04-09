@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ixgjtsijh25r"]
 
-[ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="1_lq07a"]
 [ext_resource type="Script" uid="uid://c1tviejc0358o" path="res://Weapon/ShotgunPickup.gd" id="1_n4aqm"]
+[ext_resource type="Texture2D" uid="uid://ct5kfrmpuu26a" path="res://Assets/rp_gun_bullet (1).png" id="2_n4aqm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lq07a"]
 radius = 5.0
@@ -15,7 +15,7 @@ shape = SubResource("CircleShape2D_lq07a")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-4.76837e-07, 4.76837e-07)
 scale = Vector2(0.483398, 0.483398)
-texture = ExtResource("1_lq07a")
+texture = ExtResource("2_n4aqm")
 hframes = 5
 vframes = 2
 frame = 2

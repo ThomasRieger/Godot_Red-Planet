@@ -13,9 +13,10 @@ script = ExtResource("1_eu423")
 shape = SubResource("CircleShape2D_eu423")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-4.76837e-07, 4.76837e-07)
+position = Vector2(28, 8)
 scale = Vector2(0.483398, 0.483398)
 texture = ExtResource("1_psxjs")
+offset = Vector2(-57.9232, -16.5495)
 hframes = 5
 vframes = 2
 frame = 1
