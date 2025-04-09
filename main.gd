@@ -28,12 +28,11 @@ func _ready():
 
 	# Initialize UI
 	_on_player_health_changed(player.health)
-	# Initialize all weapon slots and highlight the default (cannon in slot 0)
+	# Initialize all weapon slots
 	for i in range(slots.size()):
 		var weapon_name = player.weapons[i]["name"]
 		var ammo = player.weapons[i]["ammo"]
-		var ammo_text = "Inf" if ammo == -1 else str(ammo)
-		slots[i].text = "%s: %s" % [weapon_name, ammo_text]
+		update_slot(i, weapon_name, ammo)
 		# Highlight the default slot (slot 0, cannon)
 		slots[i].modulate = Color(1, 1, 1, 0.5) if i != 0 else Color(1, 1, 1, 1)
 
@@ -49,8 +48,15 @@ func _on_player_health_changed(new_health: int):
 	health_label.text = "Health: %d" % new_health
 
 func _on_player_weapon_changed(slot: int, weapon_name: String, ammo: int):
-	var ammo_text = "Inf" if ammo == -1 else str(ammo)
-	slots[slot].text = "%s: %s" % [weapon_name, ammo_text]
+	update_slot(slot, weapon_name, ammo)
 	# Highlight the active slot
 	for i in range(slots.size()):
-		slots[i].modulate = Color(1, 1, 1, 0.5) if i != slot else Color(1, 1, 1, 1)
+		if slots[i].visible:  # Only highlight visible slots
+			slots[i].modulate = Color(1, 1, 1, 0.5) if i != slot else Color(1, 1, 1, 1)
+
+func update_slot(slot: int, weapon_name: String, ammo: int):
+	# Hide the slot if it's empty, show it otherwise
+	slots[slot].visible = weapon_name != "Empty"
+	if slots[slot].visible:
+		var ammo_text = "Inf" if ammo == -1 else str(ammo)
+		slots[slot].text = "%s: %s" % [weapon_name, ammo_text]

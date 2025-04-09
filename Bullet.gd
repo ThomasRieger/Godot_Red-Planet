@@ -2,6 +2,7 @@ extends Area2D
 
 var speed = 400
 var direction = Vector2.ZERO
+var damage = 10
 @onready var sprite = $Sprite2D
 var lifetime = 5.0
 
