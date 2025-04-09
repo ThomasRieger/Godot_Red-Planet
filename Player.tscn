@@ -69,4 +69,13 @@ scale = Vector2(0.68, 0.74)
 texture = ExtResource("4_e80uo")
 hframes = 5
 vframes = 2
+frame = 3
+
+[node name="ShotgunSprite" type="Sprite2D" parent="Head"]
+visible = false
+position = Vector2(7.27596e-12, 0)
+scale = Vector2(0.68, 0.74)
+texture = ExtResource("4_e80uo")
+hframes = 5
+vframes = 2
 frame = 2

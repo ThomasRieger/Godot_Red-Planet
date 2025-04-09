@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=4 uid="uid://bxrqquykmx84m"]
+[gd_scene load_steps=8 format=4 uid="uid://bxrqquykmx84m"]
 
 [ext_resource type="Script" uid="uid://becs0yck1yw5h" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://qcsoq4ybi1ft" path="res://Player.tscn" id="2_0xm2m"]
 [ext_resource type="Texture2D" uid="uid://dmq7tgvgdu6w" path="res://progress_pro.png" id="3_h2yge"]
 [ext_resource type="PackedScene" uid="uid://b2qi6u0yrwvpe" path="res://Weapon/MachineGunPickup.tscn" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://ixgjtsijh25r" path="res://Weapon/ShotgunPickup.tscn" id="5_lquwl"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("3_h2yge")
@@ -74,3 +75,9 @@ position = Vector2(65, -13)
 
 [node name="MachineGunPickup2" parent="." instance=ExtResource("4_1bvp3")]
 position = Vector2(64, 26)
+
+[node name="ShotgunPickup" parent="." instance=ExtResource("5_lquwl")]
+position = Vector2(-59, 22)
+
+[node name="ShotgunPickup2" parent="." instance=ExtResource("5_lquwl")]
+position = Vector2(-59, -2)

@@ -5,6 +5,7 @@ extends CharacterBody2D
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite
 @onready var machine_gun_sprite = $Head/MachineGunSprite
+@onready var shotgun_sprite = $Head/ShotgunSprite
 var health = 100
 var weapons = [
 	{"name": "cannon", "ammo": -1},
@@ -82,7 +83,7 @@ func _input(event):
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			if event.pressed:
 				is_shooting = true
-				if weapons[current_weapon]["name"] == "cannon":
+				if weapons[current_weapon]["name"] != "machine_gun":
 					shoot()
 			else:
 				is_shooting = false
@@ -108,40 +109,70 @@ func shoot():
 		bullet.direction = (get_global_mouse_position() - global_position).normalized()
 		bullet.damage = 5
 		get_parent().add_child(bullet)
-		
-		# Reduce ammo
+
 		weapons[current_weapon]["ammo"] -= 1
 		emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 		
-		# Discard machine gun if out of ammo and switch to cannon
 		if weapons[current_weapon]["ammo"] <= 0:
 			weapons[current_weapon] = {"name": "Empty", "ammo": 0}
-			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])  # Update the emptied slot
-			current_weapon = 0  # Switch to cannon
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+			current_weapon = 0
 			update_weapon_sprite()
-			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])  # Update the new slot
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 			return
 		
 		can_shoot = false
 		await get_tree().create_timer(machine_gun_cooldown).timeout
 		can_shoot = true
 
+	elif weapons[current_weapon]["name"] == "shotgun" and weapons[current_weapon]["ammo"] > 0:
+		var base_direction = (get_global_mouse_position() - global_position).normalized()
+		var spread_angle = deg_to_rad(30)
+		var pellet_count = 5
+		var angle_step = spread_angle / (pellet_count - 1) if pellet_count > 1 else 0
+		
+		for i in range(pellet_count):
+			var angle_offset = (i - (pellet_count - 1) / 2.0) * angle_step
+			var pellet_direction = base_direction.rotated(angle_offset)
+			
+			var bullet = bullet_scene.instantiate()
+			bullet.position = cannon.global_position
+			bullet.direction = pellet_direction
+			bullet.damage = 15
+			bullet.lifetime = 0.5  # Shorter range (disappears after 0.3 seconds)
+			bullet.speed = 200  # Slower speed for even shorter range
+			get_parent().add_child(bullet)
+		
+		var old_slot = current_weapon
+		weapons[current_weapon]["ammo"] -= 1
+		emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+		
+		if weapons[current_weapon]["ammo"] <= 0:
+			weapons[current_weapon] = {"name": "Empty", "ammo": 0}
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+			current_weapon = 0
+			update_weapon_sprite()
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+			return
+		
+		can_shoot = false
+		await get_tree().create_timer(shoot_cooldown).timeout
+		can_shoot = true
+
 func update_weapon_sprite():
 	cannon_sprite.visible = weapons[current_weapon]["name"] == "cannon" or weapons[current_weapon]["name"] == "Empty"
 	machine_gun_sprite.visible = weapons[current_weapon]["name"] == "machine_gun"
+	shotgun_sprite.visible = weapons[current_weapon]["name"] == "shotgun"
 
 func pickup_weapon(weapon_name: String, ammo: int):
-	# Check if the player already has this weapon
 	for i in range(1, weapons.size()):
 		if weapons[i]["name"] == weapon_name:
-			# Refill ammo to base amount (100 for machine gun)
-			weapons[i]["ammo"] = 100
+			weapons[i]["ammo"] = 100 if weapon_name == "machine_gun" else 50
 			current_weapon = i
 			update_weapon_sprite()
 			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 			return
 	
-	# If not found, add to an empty slot
 	for i in range(1, weapons.size()):
 		if weapons[i]["name"] == "Empty":
 			weapons[i] = {"name": weapon_name, "ammo": ammo}
