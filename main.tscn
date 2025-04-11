@@ -99,3 +99,6 @@ position = Vector2(12, 76)
 
 [node name="DummyEnemy" parent="." groups=["enemy"] instance=ExtResource("8_5vw27")]
 position = Vector2(-74, -51)
+
+[node name="DummyEnemy2" parent="." groups=["enemy"] instance=ExtResource("8_5vw27")]
+position = Vector2(-112, -50)

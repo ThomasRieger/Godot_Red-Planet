@@ -24,5 +24,3 @@ offset = Vector2(-0.494243, -2.0671)
 hframes = 5
 vframes = 2
 frame = 8
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
