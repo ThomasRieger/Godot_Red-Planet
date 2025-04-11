@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://dt1hc3ynmeguy"]
+
+[ext_resource type="Script" uid="uid://byl0fgfnbu8bf" path="res://Weapon/RocketCannonPickup.gd" id="1_4y3f5"]
+[ext_resource type="Texture2D" uid="uid://ct5kfrmpuu26a" path="res://Assets/rp_gun_bullet (1).png" id="2_45nb0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qfp8v"]
+radius = 5.0
+
+[node name="RocketCannonPickup" type="Area2D"]
+collision_layer = 9
+collision_mask = 8
+script = ExtResource("1_4y3f5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_qfp8v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(28, 8)
+scale = Vector2(0.483398, 0.483398)
+texture = ExtResource("2_45nb0")
+offset = Vector2(-57.9232, -16.5495)
+hframes = 5
+vframes = 2
+frame = 4
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

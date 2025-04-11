@@ -16,4 +16,8 @@ func _physics_process(delta):
 	position += direction * speed * delta
 
 func _on_body_entered(body):
+	print("Bullet collided with: ", body.name)
+	if body.is_in_group("enemy"):
+		print("Bullet hit enemy, dealing ", damage, " damage")
+		body.take_damage(damage)
 	queue_free()

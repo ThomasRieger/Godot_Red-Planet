@@ -7,6 +7,8 @@
 radius = 5.0
 
 [node name="LazerCannonPickup" type="Area2D"]
+collision_layer = 9
+collision_mask = 8
 script = ExtResource("1_eu423")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c3fk7iilr0d4d"]
 
-[ext_resource type="Script" uid="uid://oco0nsnjtuvq" path="res://Bullet.gd" id="1_higbx"]
+[ext_resource type="Script" uid="uid://oco0nsnjtuvq" path="res://Weapon/Bullet.gd" id="1_higbx"]
 [ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="2_gxusm"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gxusm"]
@@ -9,6 +9,7 @@ height = 4.0
 
 [node name="Bullet" type="Area2D"]
 rotation = 1.5708
+collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_higbx")
 

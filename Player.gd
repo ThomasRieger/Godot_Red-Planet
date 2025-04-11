@@ -7,8 +7,8 @@ extends CharacterBody2D
 @onready var machine_gun_sprite = $Head/MachineGunSprite
 @onready var shotgun_sprite = $Head/ShotgunSprite
 @onready var lazer_cannon_sprite = $Head/LazerSprite
+@onready var rocket_cannon_sprite = $Head/RocketCannonSprite  # New rocket cannon sprite
 @onready var bullet_spawn_point = $Head/BulletSpawnPoint
-
 var health = 100
 var weapons = [
 	{"name": "cannon", "ammo": -1},
@@ -20,10 +20,12 @@ var weapons = [
 var current_weapon = 0
 var bullet_scene = preload("res://Weapon/Bullet.tscn")
 var lazer_scene = preload("res://Weapon/Lazer.tscn")
+var rocket_scene = preload("res://Weapon/Rocket.tscn")  # New rocket scene
 var can_shoot = true
-var shoot_cooldown = 1.0
-var machine_gun_cooldown = 0.1
-var lazer_cannon_cooldown = 1.5
+var shoot_cooldown = 1.0  # Cooldown for cannon and shotgun
+var machine_gun_cooldown = 0.1  # Faster cooldown for machine gun
+var lazer_cannon_cooldown = 1.5  # Cooldown for lazer cannon
+var rocket_cannon_cooldown = 2.0  # Slower cooldown for rocket cannon
 var is_shooting = false
 
 signal weapon_changed(slot, weapon_name, ammo)
@@ -164,11 +166,9 @@ func shoot():
 		can_shoot = true
 
 	elif weapons[current_weapon]["name"] == "lazer_cannon" and weapons[current_weapon]["ammo"] > 0:
-		# Lazer cannon: straight, long beam, mid-range (400 pixels), 0.5 seconds
 		var lazer = lazer_scene.instantiate()
-		var direction_to_mouse = (get_global_mouse_position() - cannon.global_position).normalized()
 		lazer.position = bullet_spawn_point.global_position
-		lazer.rotation = direction_to_mouse.angle()  # Align with mouse direction
+		lazer.rotation = cannon.rotation
 		lazer.damage = 20
 		get_parent().add_child(lazer)
 		
@@ -187,16 +187,40 @@ func shoot():
 		await get_tree().create_timer(lazer_cannon_cooldown).timeout
 		can_shoot = true
 
+	elif weapons[current_weapon]["name"] == "rocket_cannon" and weapons[current_weapon]["ammo"] > 0:
+		# Rocket cannon: mid-speed projectile, explodes on impact, 40 damage, 2-second cooldown
+		var rocket = rocket_scene.instantiate()
+		rocket.position = bullet_spawn_point.global_position
+		rocket.direction = (get_global_mouse_position() - global_position).normalized()
+		rocket.damage = 40
+		get_parent().add_child(rocket)
+		
+		weapons[current_weapon]["ammo"] -= 1
+		emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+		
+		if weapons[current_weapon]["ammo"] <= 0:
+			weapons[current_weapon] = {"name": "Empty", "ammo": 0}
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+			current_weapon = 0
+			update_weapon_sprite()
+			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
+			return
+		
+		can_shoot = false
+		await get_tree().create_timer(rocket_cannon_cooldown).timeout
+		can_shoot = true
+
 func update_weapon_sprite():
 	cannon_sprite.visible = weapons[current_weapon]["name"] == "cannon" or weapons[current_weapon]["name"] == "Empty"
 	machine_gun_sprite.visible = weapons[current_weapon]["name"] == "machine_gun"
 	shotgun_sprite.visible = weapons[current_weapon]["name"] == "shotgun"
 	lazer_cannon_sprite.visible = weapons[current_weapon]["name"] == "lazer_cannon"
+	rocket_cannon_sprite.visible = weapons[current_weapon]["name"] == "rocket_cannon"
 
 func pickup_weapon(weapon_name: String, ammo: int):
 	for i in range(1, weapons.size()):
 		if weapons[i]["name"] == weapon_name:
-			weapons[i]["ammo"] = 100 if weapon_name == "machine_gun" else 50 if weapon_name == "shotgun" else 20
+			weapons[i]["ammo"] = 100 if weapon_name == "machine_gun" else 50 if weapon_name == "shotgun" else 20 if weapon_name == "lazer_cannon" else 25  # Refill to base ammo
 			current_weapon = i
 			update_weapon_sprite()
 			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])

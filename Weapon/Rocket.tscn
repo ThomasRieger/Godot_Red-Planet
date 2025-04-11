@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://coq8cw22dcpc6"]
+
+[ext_resource type="Texture2D" uid="uid://djj8d145crtqg" path="res://Assets/rp_gun_bullet.png" id="1_jv3d5"]
+[ext_resource type="Script" uid="uid://byp4amnm2mf1h" path="res://Weapon/Rocket.gd" id="1_k82pl"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_k82pl"]
+radius = 1.0
+height = 2.0
+
+[node name="Rocket" type="Area2D"]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_k82pl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2.22557e-07, -5)
+rotation = -3.12895
+shape = SubResource("CapsuleShape2D_k82pl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.502062, 0.604126)
+texture = ExtResource("1_jv3d5")
+offset = Vector2(-0.0477245, -5.03451)
+hframes = 5
+vframes = 2
+frame = 5
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

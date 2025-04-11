@@ -39,10 +39,12 @@ animations = [{
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 rotation = 1.5708
-collision_mask = 2
+collision_layer = 8
+collision_mask = 3
 script = ExtResource("1_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.770086, 0.830476)
 shape = SubResource("RectangleShape2D_7dm0k")
 
 [node name="Wheel" type="AnimatedSprite2D" parent="."]
@@ -83,6 +85,15 @@ hframes = 5
 vframes = 2
 frame = 1
 
+[node name="RocketCannonSprite" type="Sprite2D" parent="Head"]
+visible = false
+position = Vector2(1.22236e-11, 0)
+scale = Vector2(0.68, 0.74)
+texture = ExtResource("4_cxr5p")
+hframes = 5
+vframes = 2
+frame = 4
+
 [node name="ShotgunSprite" type="Sprite2D" parent="Head"]
 visible = false
 position = Vector2(7.27596e-12, 0)
@@ -93,4 +104,4 @@ vframes = 2
 frame = 2
 
 [node name="BulletSpawnPoint" type="Marker2D" parent="Head"]
-position = Vector2(-2.53399e-05, -7)
+position = Vector2(-3.98199e-05, -11)

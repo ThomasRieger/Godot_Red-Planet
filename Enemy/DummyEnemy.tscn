@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://jofauxsyugnm"]
+
+[ext_resource type="Texture2D" uid="uid://df8res1ykqdc4" path="res://icon.svg" id="1_te4ga"]
+[ext_resource type="Script" uid="uid://thrkiqtcohbp" path="res://Enemy/DummyEnemy.gd" id="1_u8rfm"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u8rfm"]
+
+[node name="DummyEnemy" type="Area2D"]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_u8rfm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.1875, 0.234375)
+texture = ExtResource("1_te4ga")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_u8rfm")
