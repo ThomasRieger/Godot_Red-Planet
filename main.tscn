@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://bxrqquykmx84m"]
+[gd_scene load_steps=12 format=4 uid="uid://bxrqquykmx84m"]
 
 [ext_resource type="Script" uid="uid://becs0yck1yw5h" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://qcsoq4ybi1ft" path="res://Player.tscn" id="2_0xm2m"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dxkftuipdsi3t" path="res://Weapon/LazerCannonPickup.tscn" id="6_7mycd"]
 [ext_resource type="PackedScene" uid="uid://dt1hc3ynmeguy" path="res://Weapon/RocketCannonPickup.tscn" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://jofauxsyugnm" path="res://Enemy/DummyEnemy.tscn" id="8_5vw27"]
+[ext_resource type="PackedScene" uid="uid://17nfqvvwvdkb" path="res://Room/grid_room_1.tscn" id="9_kek77"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("3_h2yge")
@@ -102,3 +103,6 @@ position = Vector2(-74, -51)
 
 [node name="DummyEnemy2" parent="." groups=["enemy"] instance=ExtResource("8_5vw27")]
 position = Vector2(-112, -50)
+
+[node name="grid_room_1" parent="." instance=ExtResource("9_kek77")]
+position = Vector2(-160, -90)

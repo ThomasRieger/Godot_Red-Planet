@@ -19,5 +19,5 @@ func _on_area_entered(area):
 	var explosion = explosion_scene.instantiate()
 	explosion.position = global_position
 	explosion.damage = damage
-	get_parent().add_child(explosion)
-	queue_free()
+	get_parent().call_deferred("add_child", explosion)
+	call_deferred("queue_free")
