@@ -98,7 +98,6 @@ position = Vector2(-23, 75)
 position = Vector2(12, 76)
 
 [node name="grid_room_1" parent="." instance=ExtResource("9_kek77")]
-position = Vector2(-160, -90)
 
 [node name="EnemySpawnTimer" type="Timer" parent="."]
 wait_time = 10.0
