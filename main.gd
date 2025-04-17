@@ -32,7 +32,8 @@ var room_size: int = 300
 var rooms = []
 var rocket_parts = []
 var collected_parts: int = 0
-var can_deliver: bool = true  # Added to prevent multiple deliveries
+var can_deliver: bool = true
+var total_parts_required: int = 6  # Will be set from rocket_silo in _ready
 
 func _ready():
 	# Generate the 10x10 map
@@ -81,18 +82,21 @@ func _ready():
 	rocket_silo.parts_updated.connect(_on_rocket_silo_parts_updated)
 	rocket_silo.rocket_launched.connect(_on_rocket_launched)
 
+	# Get total parts required from the silo
+	total_parts_required = rocket_silo.required_parts
+
 	# Connect player to silo interaction
 	var player_area = player.get_node("Area2D")
 	if player_area:
 		player_area.area_entered.connect(_on_player_area_entered)
-		player_area.area_exited.connect(_on_player_area_exited)  # Added
+		player_area.area_exited.connect(_on_player_area_exited)
 		print("Player Area2D found and signals connected")
 	else:
 		print("Error: Player Area2D node not found!")
 
 	# Initialize UI
 	_on_player_health_changed(player.health)
-	parts_label.text = "Parts: 0/6"
+	parts_label.text = "Parts: 0/%d" % total_parts_required  # Updated to use total_parts_required
 	for i in range(slots.size()):
 		var weapon_name = player.weapons[i]["name"]
 		var ammo = player.weapons[i]["ammo"]
@@ -113,7 +117,7 @@ func spawn_rocket_parts():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	var placed_parts = 0
-	var num_parts = 6
+	var num_parts = total_parts_required  # Use the variable instead of hardcoding
 
 	while placed_parts < num_parts:
 		var grid_x = rng.randi_range(0, map_width - 1)
@@ -140,6 +144,11 @@ func _physics_process(delta):
 	var seconds = int(timer) % 60
 	timer_label.text = "Time: %02d:%02d" % [minutes, seconds]
 
+	# Clamp player's position to map boundaries
+	var map_max = map_width * room_size  # 3000
+	player.position.x = clamp(player.position.x, 0, map_max)
+	player.position.y = clamp(player.position.y, 0, map_max)
+
 	update_room_visibility()
 	minimap.update_player_position(player.position)
 
@@ -161,27 +170,30 @@ func _on_player_health_changed(new_health: int):
 func _on_rocket_part_collected(part: Node):
 	collected_parts += 1
 	rocket_parts.erase(part)
-	parts_label.text = "Parts: %d/6" % collected_parts
+	var remaining_parts = total_parts_required - rocket_silo.current_parts
+	parts_label.text = "Parts: %d/%d" % [collected_parts, remaining_parts]
 	minimap.update_rocket_parts(rocket_parts)
 
 func _on_player_area_entered(area: Area2D):
 	print("Player entered area: ", area.name)
 	if area.is_in_group("silo") and collected_parts > 0 and can_deliver:
 		print("Delivering %d parts to silo" % collected_parts)
-		can_deliver = false  # Prevent further deliveries until the player leaves
+		can_deliver = false
 		for i in range(collected_parts):
 			rocket_silo.add_part()
 		collected_parts = 0
-		parts_label.text = "Parts: 0/6"
+		var remaining_parts = total_parts_required - rocket_silo.current_parts
+		parts_label.text = "Parts: 0/%d" % remaining_parts
 	else:
 		print("Condition failed: is_in_group('silo') = %s, collected_parts = %d, can_deliver = %s" % [area.is_in_group("silo"), collected_parts, can_deliver])
 
 func _on_player_area_exited(area: Area2D):
 	if area.is_in_group("silo"):
-		can_deliver = true  # Allow delivery again after leaving the silo
+		can_deliver = true
 
 func _on_rocket_silo_parts_updated(current_parts: int):
-	parts_label.text = "Parts: 0/6 (Delivered: %d/6)" % current_parts
+	var remaining_parts = total_parts_required - current_parts
+	parts_label.text = "Parts: 0/%d (Delivered: %d/%d)" % [remaining_parts, current_parts, total_parts_required]
 
 func _on_rocket_launched():
 	print("Rocket launched signal received. Quitting game for testing.")
