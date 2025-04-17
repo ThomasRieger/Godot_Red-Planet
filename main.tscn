@@ -102,5 +102,9 @@ tile_map_data = PackedByteArray("AADc/+v/AQAAAAAAAADc/+z/AQAAAAAAAFDd/+v/AQABAAA
 tile_set = SubResource("TileSet_1bvp3")
 
 [node name="EnemySpawnTimer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 5.0
+autostart = true
+
+[node name="WeaponPickupTimer" type="Timer" parent="."]
+wait_time = 30.0
 autostart = true

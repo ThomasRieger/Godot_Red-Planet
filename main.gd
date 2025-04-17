@@ -13,12 +13,20 @@ extends Node2D
 	$CanvasLayer/HBoxContainer/Slot5
 ]
 @onready var enemy_spawn_timer: Timer = $EnemySpawnTimer
+@onready var weapon_pickup_timer: Timer = $WeaponPickupTimer  # Added
 @onready var minimap: ColorRect = $CanvasLayer/MinimapContainer/Minimap
 @onready var rocket_silo: Area2D = $RocketSilo
 var follow_speed: float = 5.0
 var timer: float = 0.0
 var walker_enemy_scene = preload("res://Enemy/WalkerEnemy.tscn")
 var rocket_part_scene = preload("res://RocketPart.tscn")
+# Added weapon pickup scenes
+var weapon_pickup_scenes = [
+	preload("res://Weapon/MachineGunPickup.tscn"),
+	preload("res://Weapon/ShotgunPickup.tscn"),
+	preload("res://Weapon/LazerCannonPickup.tscn"),
+	preload("res://Weapon/RocketCannonPickup.tscn")
+]
 var room_scenes = [
 	preload("res://Room/grid_room_1.tscn"),
 	preload("res://Room/grid_room_2.tscn"),
@@ -31,9 +39,10 @@ var map_height: int = 10
 var room_size: int = 300
 var rooms = []
 var rocket_parts = []
+var weapon_pickups = []  # Added to track active pickups
 var collected_parts: int = 0
 var can_deliver: bool = true
-var total_parts_required: int = 6  # Will be set from rocket_silo in _ready
+var total_parts_required: int = 6
 
 func _ready():
 	# Generate the 10x10 map
@@ -61,6 +70,11 @@ func _ready():
 		print("RocketSilo is in group 'silo'")
 	else:
 		print("Error: RocketSilo is not in group 'silo'!")
+
+	# Position the DummyEnemy in a nearby room (6, 6)
+	var dummy_enemy = get_node("DummyEnemy")
+	if dummy_enemy:
+		dummy_enemy.position = Vector2(1950, 1950)
 
 	# Spawn rocket parts
 	spawn_rocket_parts()
@@ -91,7 +105,7 @@ func _ready():
 
 	# Initialize UI
 	_on_player_health_changed(player.health)
-	parts_label.text = "Parts: 0/%d" % total_parts_required  # Updated to use total_parts_required
+	parts_label.text = "Parts: 0/%d" % total_parts_required
 	for i in range(slots.size()):
 		var weapon_name = player.weapons[i]["name"]
 		var ammo = player.weapons[i]["ammo"]
@@ -101,18 +115,22 @@ func _ready():
 	# Connect the enemy spawn timer
 	enemy_spawn_timer.timeout.connect(_on_enemy_spawn_timer_timeout)
 
+	# Connect the weapon pickup timer
+	weapon_pickup_timer.timeout.connect(_on_weapon_pickup_timer_timeout)  # Added
+
 	# Initial visibility update
 	update_room_visibility()
 
 	# Initialize minimap
 	minimap.update_player_position(player.position)
 	minimap.update_rocket_parts(rocket_parts)
+	minimap.update_weapon_pickups(weapon_pickups)  # Added
 
 func spawn_rocket_parts():
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	var placed_parts = 0
-	var num_parts = total_parts_required  # Use the variable instead of hardcoding
+	var num_parts = total_parts_required
 
 	while placed_parts < num_parts:
 		var grid_x = rng.randi_range(0, map_width - 1)
@@ -140,7 +158,7 @@ func _physics_process(delta):
 	timer_label.text = "Time: %02d:%02d" % [minutes, seconds]
 
 	# Clamp player's position to map boundaries
-	var map_max = map_width * room_size  # 3000
+	var map_max = map_width * room_size
 	player.position.x = clamp(player.position.x, 0, map_max)
 	player.position.y = clamp(player.position.y, 0, map_max)
 
@@ -233,3 +251,41 @@ func spawn_enemy():
 	var enemy = walker_enemy_scene.instantiate()
 	enemy.global_position = spawn_position
 	add_child(enemy)
+
+# Added: Function to spawn weapon pickups
+func _on_weapon_pickup_timer_timeout():
+	var num_pickups = 2  # Spawn 2 pickups each time
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+
+	for i in range(num_pickups):
+		# Select a random pickup type
+		var pickup_scene = weapon_pickup_scenes[randi() % weapon_pickup_scenes.size()]
+		var pickup = pickup_scene.instantiate()
+		
+		# Set a random position within the map
+		var grid_x = rng.randi_range(0, map_width - 1)
+		var grid_y = rng.randi_range(0, map_height - 1)
+		var room_pos = Vector2(grid_x * room_size, grid_y * room_size)
+		var pickup_pos = room_pos + Vector2(
+			rng.randi_range(-150, 150) + 150,
+			rng.randi_range(-150, 150) + 150
+		)
+		pickup.position = pickup_pos
+		
+		# Connect a signal to handle pickup collection
+		pickup.connect("body_entered", _on_weapon_pickup_collected.bind(pickup))
+		
+		# Add to scene and track in list
+		add_child(pickup)
+		weapon_pickups.append(pickup)
+	
+	# Update minimap with new pickups
+	minimap.update_weapon_pickups(weapon_pickups)
+
+# Added: Function to handle pickup collection
+func _on_weapon_pickup_collected(body: Node, pickup: Node):
+	if body.is_in_group("player"):
+		weapon_pickups.erase(pickup)
+		minimap.update_weapon_pickups(weapon_pickups)
+		pickup.queue_free()

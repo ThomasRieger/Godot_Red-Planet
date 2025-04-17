@@ -100,7 +100,7 @@ func shoot():
 		var bullet = bullet_scene.instantiate()
 		bullet.position = bullet_spawn_point.global_position
 		bullet.direction = (get_global_mouse_position() - global_position).normalized()
-		bullet.damage = 10
+		bullet.damage = 15
 		get_parent().add_child(bullet)
 		
 		can_shoot = false
@@ -132,7 +132,7 @@ func shoot():
 	elif weapons[current_weapon]["name"] == "shotgun" and weapons[current_weapon]["ammo"] > 0:
 		var base_direction = (get_global_mouse_position() - global_position).normalized()
 		var spread_angle = deg_to_rad(30)
-		var pellet_count = 5
+		var pellet_count = 6
 		var angle_step = spread_angle / (pellet_count - 1) if pellet_count > 1 else 0
 		
 		for i in range(pellet_count):
@@ -166,7 +166,7 @@ func shoot():
 		var lazer = lazer_scene.instantiate()
 		lazer.position = bullet_spawn_point.global_position
 		lazer.rotation = cannon.rotation
-		lazer.damage = 20
+		lazer.damage = 25
 		get_parent().add_child(lazer)
 		
 		weapons[current_weapon]["ammo"] -= 1

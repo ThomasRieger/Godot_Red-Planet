@@ -71,7 +71,7 @@ position = Vector2(0, -24)
 scale = Vector2(1.25, 1.09375)
 sprite_frames = SubResource("SpriteFrames_6grqf")
 animation = &"walk"
-frame_progress = 0.806547
+frame_progress = 0.451466
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
