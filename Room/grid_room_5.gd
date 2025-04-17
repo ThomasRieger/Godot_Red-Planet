@@ -14,7 +14,6 @@ func _ready():
 	rocks_per_cluster = rng.randi_range(3, 100)
 	
 	for i in range(num_clusters):
-		# Place clusters within a 300x300 square (-150, 150)
 		var cluster_center = Vector2(
 			rng.randi_range(-150, 150),
 			rng.randi_range(-150, 150)
@@ -27,18 +26,15 @@ func _ready():
 				rng.randf_range(-cluster_radius, cluster_radius),
 				rng.randf_range(-cluster_radius, cluster_radius)
 			)
-			offset *= rng.randf()  # Bias toward center
+			offset *= rng.randf()
 
 			rock.position = cluster_center + offset
-			# Rock size for grid_room_1: 0.5 to 1.5
-			rock.scale = Vector2.ONE * rng.randf_range(0.5, 1.5)
+			rock.scale = Vector2.ONE * rng.randf_range(1.0, 3.0)  # Very large rocks
 			rock.rotation_degrees = rng.randf_range(0, 360)
 			
-			# Keep colors as defined
 			var red = rng.randf_range(0.6, 0.7)
 			var green_blue = rng.randf_range(0.2, 0.4)
 			rock.modulate = Color(red, green_blue, green_blue)
 
-			# Add to "world" group for collisions
 			rock.add_to_group("world")
 			add_child(rock)
