@@ -5,7 +5,7 @@ var health = 50
 var damage_per_second = 10
 var player = null
 @onready var damage_timer = $DamageTimer
-
+@onready var alien = $AnimatedSprite2D
 func _ready():
 	add_to_group("enemy")
 	player = get_tree().get_first_node_in_group("player")
@@ -15,7 +15,8 @@ func _physics_process(delta):
 	if player:
 		var direction = (player.global_position - global_position).normalized()
 		position += direction * speed * delta
-		rotation = direction.angle() + deg_to_rad(90)
+		# rotation = direction.angle() + deg_to_rad(90)
+		alien.play("walk")
 
 func _on_body_entered(body):
 	# print("WalkerEnemy collided with body: ", body.name)
