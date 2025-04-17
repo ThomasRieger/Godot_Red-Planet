@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://sqf0fxhm6iq4"]
+
+[ext_resource type="Texture2D" uid="uid://df8res1ykqdc4" path="res://icon.svg" id="1_ryew8"]
+[ext_resource type="Script" uid="uid://dk3pcusyposn3" path="res://rocket_silo.gd" id="1_y225a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y225a"]
+size = Vector2(126, 128)
+
+[node name="RocketSilo" type="Area2D"]
+collision_layer = 9
+collision_mask = 8
+script = ExtResource("1_y225a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ryew8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_y225a")

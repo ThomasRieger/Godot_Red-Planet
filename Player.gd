@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 100
+@export var speed = 300
 @onready var cannon = $Head
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite

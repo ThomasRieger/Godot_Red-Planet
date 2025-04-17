@@ -4,6 +4,7 @@ extends Node2D
 @onready var camera: Camera2D = $Camera2D
 @onready var health_label: Label = $CanvasLayer/VBoxContainer/HealthLabel
 @onready var timer_label: Label = $CanvasLayer/VBoxContainer/TimerLabel
+@onready var parts_label: Label = $CanvasLayer/PartsLabel
 @onready var slots = [
 	$CanvasLayer/HBoxContainer/Slot1,
 	$CanvasLayer/HBoxContainer/Slot2,
@@ -13,9 +14,11 @@ extends Node2D
 ]
 @onready var enemy_spawn_timer: Timer = $EnemySpawnTimer
 @onready var minimap: ColorRect = $CanvasLayer/MinimapContainer/Minimap
+@onready var rocket_silo: Area2D = $RocketSilo
 var follow_speed: float = 5.0
 var timer: float = 0.0
 var walker_enemy_scene = preload("res://Enemy/WalkerEnemy.tscn")
+var rocket_part_scene = preload("res://RocketPart.tscn")
 var room_scenes = [
 	preload("res://Room/grid_room_1.tscn"),
 	preload("res://Room/grid_room_2.tscn"),
@@ -27,6 +30,9 @@ var map_width: int = 10
 var map_height: int = 10
 var room_size: int = 300
 var rooms = []
+var rocket_parts = []
+var collected_parts: int = 0
+var can_deliver: bool = true  # Added to prevent multiple deliveries
 
 func _ready():
 	# Generate the 10x10 map
@@ -46,6 +52,23 @@ func _ready():
 	player.position = Vector2(1650, 1650)
 	camera.position = player.position
 
+	# Position the rocket silo at the player's spawn point
+	rocket_silo.position = Vector2(1650, 1650)
+
+	# Verify silo's group
+	if rocket_silo.is_in_group("silo"):
+		print("RocketSilo is in group 'silo'")
+	else:
+		print("Error: RocketSilo is not in group 'silo'!")
+
+	# Position the DummyEnemy in a nearby room (6, 6)
+	var dummy_enemy = get_node("DummyEnemy")
+	if dummy_enemy:
+		dummy_enemy.position = Vector2(1950, 1950)
+
+	# Spawn rocket parts
+	spawn_rocket_parts()
+
 	# Connect player signals to UI updates
 	if player.health_changed.is_connected(_on_player_health_changed):
 		player.health_changed.disconnect(_on_player_health_changed)
@@ -54,8 +77,22 @@ func _ready():
 		player.weapon_changed.disconnect(_on_player_weapon_changed)
 	player.weapon_changed.connect(_on_player_weapon_changed)
 
+	# Connect rocket silo signals
+	rocket_silo.parts_updated.connect(_on_rocket_silo_parts_updated)
+	rocket_silo.rocket_launched.connect(_on_rocket_launched)
+
+	# Connect player to silo interaction
+	var player_area = player.get_node("Area2D")
+	if player_area:
+		player_area.area_entered.connect(_on_player_area_entered)
+		player_area.area_exited.connect(_on_player_area_exited)  # Added
+		print("Player Area2D found and signals connected")
+	else:
+		print("Error: Player Area2D node not found!")
+
 	# Initialize UI
 	_on_player_health_changed(player.health)
+	parts_label.text = "Parts: 0/6"
 	for i in range(slots.size()):
 		var weapon_name = player.weapons[i]["name"]
 		var ammo = player.weapons[i]["ammo"]
@@ -70,6 +107,30 @@ func _ready():
 
 	# Initialize minimap
 	minimap.update_player_position(player.position)
+	minimap.update_rocket_parts(rocket_parts)
+
+func spawn_rocket_parts():
+	var rng = RandomNumberGenerator.new()
+	rng.randomize()
+	var placed_parts = 0
+	var num_parts = 6
+
+	while placed_parts < num_parts:
+		var grid_x = rng.randi_range(0, map_width - 1)
+		var grid_y = rng.randi_range(0, map_height - 1)
+		if grid_x == 5 and grid_y == 5:
+			continue
+		var room_pos = Vector2(grid_x * room_size, grid_y * room_size)
+		var part_pos = room_pos + Vector2(
+			rng.randi_range(-150, 150) + 150,
+			rng.randi_range(-150, 150) + 150
+		)
+		var part = rocket_part_scene.instantiate()
+		part.position = part_pos
+		part.collected.connect(_on_rocket_part_collected)
+		add_child(part)
+		rocket_parts.append(part)
+		placed_parts += 1
 
 func _physics_process(delta):
 	camera.position = camera.position.lerp(player.position, follow_speed * delta)
@@ -79,10 +140,7 @@ func _physics_process(delta):
 	var seconds = int(timer) % 60
 	timer_label.text = "Time: %02d:%02d" % [minutes, seconds]
 
-	# Update room visibility each frame
 	update_room_visibility()
-
-	# Update minimap with player's current position
 	minimap.update_player_position(player.position)
 
 func update_room_visibility():
@@ -99,6 +157,37 @@ func update_room_visibility():
 
 func _on_player_health_changed(new_health: int):
 	health_label.text = "Health: %d" % new_health
+
+func _on_rocket_part_collected(part: Node):
+	collected_parts += 1
+	rocket_parts.erase(part)
+	parts_label.text = "Parts: %d/6" % collected_parts
+	minimap.update_rocket_parts(rocket_parts)
+
+func _on_player_area_entered(area: Area2D):
+	print("Player entered area: ", area.name)
+	if area.is_in_group("silo") and collected_parts > 0 and can_deliver:
+		print("Delivering %d parts to silo" % collected_parts)
+		can_deliver = false  # Prevent further deliveries until the player leaves
+		for i in range(collected_parts):
+			rocket_silo.add_part()
+		collected_parts = 0
+		parts_label.text = "Parts: 0/6"
+	else:
+		print("Condition failed: is_in_group('silo') = %s, collected_parts = %d, can_deliver = %s" % [area.is_in_group("silo"), collected_parts, can_deliver])
+
+func _on_player_area_exited(area: Area2D):
+	if area.is_in_group("silo"):
+		can_deliver = true  # Allow delivery again after leaving the silo
+
+func _on_rocket_silo_parts_updated(current_parts: int):
+	parts_label.text = "Parts: 0/6 (Delivered: %d/6)" % current_parts
+
+func _on_rocket_launched():
+	print("Rocket launched signal received. Quitting game for testing.")
+	get_tree().quit()
+	# Original behavior (commented out):
+	# get_tree().change_scene_to_file("res://WinScene.tscn")
 
 func _on_player_weapon_changed(slot: int, weapon_name: String, ammo: int):
 	update_slot(slot, weapon_name, ammo)

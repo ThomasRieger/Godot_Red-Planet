@@ -9,7 +9,7 @@ var player = null
 func _ready():
 	add_to_group("enemy")
 	player = get_tree().get_first_node_in_group("player")
-	print("WalkerEnemy initialized at position: ", global_position, " in group 'enemy'")
+	# print("WalkerEnemy initialized at position: ", global_position, " in group 'enemy'")
 
 func _physics_process(delta):
 	if player:
@@ -18,7 +18,7 @@ func _physics_process(delta):
 		rotation = direction.angle() + deg_to_rad(90)
 
 func _on_body_entered(body):
-	print("WalkerEnemy collided with body: ", body.name)
+	# print("WalkerEnemy collided with body: ", body.name)
 	if body.is_in_group("player"):
 		damage_timer.start()
 
@@ -32,7 +32,7 @@ func _on_damage_timer_timeout():
 
 func take_damage(damage: int):
 	health -= damage
-	print("WalkerEnemy took ", damage, " damage. Remaining health: ", health)
+	# print("WalkerEnemy took ", damage, " damage. Remaining health: ", health)
 	if health <= 0:
 		print("WalkerEnemy destroyed!")
 		queue_free()
