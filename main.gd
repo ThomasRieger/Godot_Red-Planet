@@ -227,7 +227,7 @@ func update_slot(slot: int, weapon_name: String, ammo: int):
 		slots[slot].text = "%s: %s" % [weapon_name, ammo_text]
 
 func _on_enemy_spawn_timer_timeout():
-	var num_enemies = randi_range(5, 8)
+	var num_enemies = randi_range(4, 6)
 	for i in range(num_enemies):
 		spawn_enemy()
 
