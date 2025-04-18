@@ -18,6 +18,7 @@ var gen_star_direction = 10
 var gen_star_position = 1000
 
 func _ready() -> void:
+	AudioController.play_titleMusic()
 	gen_star_direction = 10
 	gen_star_position = 1000
 	press_blink()
@@ -98,13 +99,16 @@ func start_title_animation():
 	tween3.tween_property(star_ship, "rotation", 5, 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	var tween4 = create_tween()
 	tween4.tween_property(star_ship, "position", star_ship.position + Vector2(100, 100), 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	
+	AudioController.stop_titleMusic()
+	AudioController.play_fall()
 	var tween5 = create_tween()
 	tween5.tween_property(star_ship, "modulate:a", 0, 1.5).set_trans(Tween.TRANS_SINE)
 	var tween6 = create_tween()
 	tween6.tween_property(crash_label, "modulate:a", 1, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(1.8).timeout
 	star_ex.emitting = true
+	AudioController.play_crash()
+	await get_tree().create_timer(0.5).timeout
 	var tween7 = create_tween()
 	tween7.tween_property(get_parent(), "modulate:a", 0, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
@@ -112,8 +116,11 @@ func start_title_animation():
 	crash_label.visible = false
 	get_node("../../../CanvasLayer").control_gone()
 	get_tree().paused = false
+	AudioController.play_gameMusic()
 
 func win() -> void:
+	AudioController.stop_gameMusic()
+	AudioController.play_victoryMusic()
 	set_process_input(false)
 	get_tree().paused = false  # Unpause to allow tweens
 	var tween = create_tween()
@@ -139,7 +146,6 @@ func win() -> void:
 	survive_blink()
 	await get_tree().create_timer(7).timeout
 	print("ended")
-	
 	# Fade to black
 	end_screen.visible = true
 	end_screen.modulate.a = 0 

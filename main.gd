@@ -5,6 +5,7 @@ extends Node2D
 @onready var health_label: Label = $CanvasLayer/VBoxContainer/HealthLabel
 @onready var timer_label: Label = $CanvasLayer/VBoxContainer/TimerLabel
 @onready var parts_label: Label = $CanvasLayer/PartsLabel
+@onready var notify_label: Label = $CanvasLayer/Notify
 @onready var slots = [
 	$CanvasLayer/HBoxContainer/Slot1,
 	$CanvasLayer/HBoxContainer/Slot2,
@@ -176,11 +177,17 @@ func _on_player_health_changed(new_health: int):
 	health_label.text = "Health: %d" % new_health
 
 func _on_rocket_part_collected(part: Node):
+	AudioController.pickup_part()
 	collected_parts += 1
 	rocket_parts.erase(part)
 	var remaining_parts = total_parts_required - rocket_silo.current_parts
 	parts_label.text = "Parts: %d/%d" % [collected_parts, remaining_parts]
 	minimap.update_rocket_parts(rocket_parts)
+	if collected_parts == 6:
+		notify_label.visible = true
+		await get_tree().create_timer(5).timeout
+		var tween = create_tween()
+		tween.tween_property(notify_label, "modulate:a", 0, 1)
 
 func _on_player_area_entered(area: Area2D):
 	print("Player entered area: ", area.name)
@@ -222,7 +229,7 @@ func update_slot(slot: int, weapon_name: String, ammo: int):
 		slots[slot].text = "%s: %s" % [weapon_name, ammo_text]
 
 func _on_enemy_spawn_timer_timeout():
-	var num_enemies = randi_range(4, 6)
+	var num_enemies = randi_range(2, 4)
 	for i in range(num_enemies):
 		spawn_enemy()
 
@@ -281,6 +288,7 @@ func _on_weapon_pickup_timer_timeout():
 # Added: Function to handle pickup collection
 func _on_weapon_pickup_collected(body: Node, pickup: Node):
 	if body.is_in_group("player"):
+		AudioController.pickup_gun()
 		# Restore 10 health, capped at 100
 		player.health = min(player.health + 10, 100)
 		player.emit_signal("health_changed", player.health)

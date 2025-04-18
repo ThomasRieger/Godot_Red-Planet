@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cynot1bh8degi"
+path="res://.godot/imported/fanfare - victory road II.mp3-574eea9ed4f54eeade2c068af6618dc5.mp3str"
+
+[deps]
+
+source_file="res://Audio/fanfare - victory road II.mp3"
+dest_files=["res://.godot/imported/fanfare - victory road II.mp3-574eea9ed4f54eeade2c068af6618dc5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://n02mhknwfvyg"]
+
+[ext_resource type="Script" uid="uid://vp1psi0wjwbb" path="res://Audio/audio_controller.gd" id="1_500d4"]
+[ext_resource type="AudioStream" uid="uid://b4bg2hw2rbvcr" path="res://Audio/explosion.wav" id="1_byc21"]
+[ext_resource type="AudioStream" uid="uid://dkhcsuq7l67wj" path="res://Audio/deep space flight.ogg" id="2_500d4"]
+[ext_resource type="AudioStream" uid="uid://1a8yfylbhlgg" path="res://Audio/Panferov_fight01_loop/Panferov_fight01_loop(mp3^320).mp3" id="4_vma8s"]
+
+[node name="AudioController" type="Node2D"]
+script = ExtResource("1_500d4")
+
+[node name="TitleCrash" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_byc21")
+
+[node name="TitleRocket" type="AudioStreamPlayer" parent="."]
+
+[node name="TitleMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_500d4")
+bus = &"BGM"
+
+[node name="GameMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_vma8s")
+bus = &"BGM"
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="."]
+
+[node name="AudioStreamPlayer4" type="AudioStreamPlayer" parent="."]

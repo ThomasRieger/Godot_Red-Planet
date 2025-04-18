@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 700
+@export var speed = 100
 @onready var cannon = $Head
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite
@@ -132,6 +132,7 @@ func shoot():
 		bullet.position = bullet_spawn_point.global_position
 		bullet.direction = (get_global_mouse_position() - global_position).normalized()
 		bullet.damage = 15
+		AudioController.gun_cannon()
 		get_parent().add_child(bullet)
 		
 		can_shoot = false
@@ -143,6 +144,7 @@ func shoot():
 		bullet.position = bullet_spawn_point.global_position
 		bullet.direction = (get_global_mouse_position() - global_position).normalized()
 		bullet.damage = 5
+		AudioController.gun_mg()
 		get_parent().add_child(bullet)
 		
 		weapons[current_weapon]["ammo"] -= 1
@@ -174,8 +176,9 @@ func shoot():
 			bullet.position = bullet_spawn_point.global_position
 			bullet.direction = pellet_direction
 			bullet.damage = 15
-			bullet.lifetime = 0.5
+			bullet.lifetime = 1
 			bullet.speed = 250
+			AudioController.gun_sg()
 			get_parent().add_child(bullet)
 		
 		weapons[current_weapon]["ammo"] -= 1
@@ -198,6 +201,7 @@ func shoot():
 		lazer.position = bullet_spawn_point.global_position
 		lazer.rotation = cannon.rotation
 		lazer.damage = 25
+		AudioController.gun_lazer()
 		get_parent().add_child(lazer)
 		
 		weapons[current_weapon]["ammo"] -= 1
@@ -220,6 +224,7 @@ func shoot():
 		rocket.position = bullet_spawn_point.global_position
 		rocket.direction = (get_global_mouse_position() - global_position).normalized()
 		rocket.damage = 40
+		AudioController.gun_rocket()
 		get_parent().add_child(rocket)
 		
 		weapons[current_weapon]["ammo"] -= 1
@@ -278,6 +283,8 @@ func take_damage(damage: int):
 		cannon.visible = false
 		body.visible = false
 		explo.emitting = true
+		AudioController.stop_gameMusic()
+		AudioController.play_crash()
 		await get_tree().create_timer(4).timeout
 		
 		# Check if tree is valid and reload deferred

@@ -1,0 +1,89 @@
+[gd_scene load_steps=15 format=3 uid="uid://n02mhknwfvyg"]
+
+[ext_resource type="Script" uid="uid://vp1psi0wjwbb" path="res://Audio/audio_controller.gd" id="1_500d4"]
+[ext_resource type="AudioStream" uid="uid://b4bg2hw2rbvcr" path="res://Audio/explosion.wav" id="1_byc21"]
+[ext_resource type="AudioStream" uid="uid://dkhcsuq7l67wj" path="res://Audio/deep space flight.ogg" id="2_500d4"]
+[ext_resource type="AudioStream" uid="uid://bey7evpdu8qx0" path="res://Audio/Guns/cannon/shotPT1.wav" id="3_iia7p"]
+[ext_resource type="AudioStream" uid="uid://1a8yfylbhlgg" path="res://Audio/Panferov_fight01_loop/Panferov_fight01_loop(mp3^320).mp3" id="4_vma8s"]
+[ext_resource type="AudioStream" uid="uid://b0vq1l3l3q6qi" path="res://Audio/fall.wav" id="5_rg2s8"]
+[ext_resource type="AudioStream" uid="uid://bk6eifbvnu4dg" path="res://Audio/pipe.mp3" id="6_avxq0"]
+[ext_resource type="AudioStream" uid="uid://cjaj67pqdkpok" path="res://Audio/Guns/cannon/cannon.wav" id="7_ex31p"]
+[ext_resource type="AudioStream" uid="uid://cpmtk3sxpor7w" path="res://Audio/Guns/SG/SG.wav" id="8_oqs5m"]
+[ext_resource type="AudioStream" uid="uid://ul6vn6iunknb" path="res://Audio/Guns/rocket.wav" id="9_oqs5m"]
+[ext_resource type="AudioStream" uid="uid://cfd6qswfx2ajj" path="res://Audio/Guns/laser.wav" id="9_wtqsx"]
+[ext_resource type="AudioStream" uid="uid://bqq1cmuyujset" path="res://Audio/pickupGun.wav" id="12_aqpjj"]
+[ext_resource type="AudioStream" uid="uid://0ltrww3rn5k" path="res://Audio/pickupPart.wav" id="13_03y8g"]
+[ext_resource type="AudioStream" uid="uid://k5nr016gmgwb" path="res://Audio/victory.wav" id="14_644al"]
+
+[node name="AudioController" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_500d4")
+
+[node name="TitleCrash" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_byc21")
+bus = &"SFX"
+
+[node name="Gun_MG" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_iia7p")
+volume_db = -12.34
+bus = &"SFX"
+
+[node name="TitleMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_500d4")
+volume_db = 5.0
+bus = &"BGM"
+
+[node name="GameMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_vma8s")
+volume_db = -12.181
+bus = &"BGM"
+
+[node name="Fall" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_rg2s8")
+volume_db = -2.811
+bus = &"SFX"
+
+[node name="Crash" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_avxq0")
+volume_db = -13.214
+bus = &"SFX"
+
+[node name="Gun_SG" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_oqs5m")
+volume_db = -8.9
+bus = &"SFX"
+
+[node name="Gun_LASER" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_wtqsx")
+volume_db = -11.243
+bus = &"SFX"
+
+[node name="Gun_CANNON" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_ex31p")
+volume_db = -8.482
+bus = &"SFX"
+
+[node name="Explode" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_byc21")
+volume_db = -11.243
+bus = &"SFX"
+
+[node name="Gun_ROCKET" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_oqs5m")
+volume_db = -9.422
+bus = &"SFX"
+
+[node name="Pickup_GUN" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_aqpjj")
+volume_db = -7.495
+bus = &"SFX"
+
+[node name="Pickup_PART" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("13_03y8g")
+volume_db = -6.559
+bus = &"SFX"
+
+[node name="Victory" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_644al")
+volume_db = -9.37
+bus = &"BGM"

@@ -47,6 +47,7 @@ func take_damage(damage: int):
 	health -= damage
 	# print("WalkerEnemy took ", damage, " damage. Remaining health: ", health)
 	if health <= 0:
+		AudioController.play_explode()
 		print("WalkerEnemy destroyed!")
 		death_effect.emitting = true  # Trigger particles
 		alien.hide()  # Hide sprite
