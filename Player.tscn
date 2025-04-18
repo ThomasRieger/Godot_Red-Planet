@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://qcsoq4ybi1ft"]
+[gd_scene load_steps=15 format=3 uid="uid://qcsoq4ybi1ft"]
 
 [ext_resource type="Script" uid="uid://c28mcfkcjobax" path="res://Player.gd" id="1_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://bv5e3klb0v38v" path="res://Assets/rp_player_bottom.png" id="2_kne1u"]
@@ -37,6 +37,33 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="Gradient" id="Gradient_e80uo"]
+colors = PackedColorArray(0.295309, 0.481334, 0.214197, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_cxr5p"]
+gradient = SubResource("Gradient_e80uo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cxr5p"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 20.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 50, 0)
+damping_max = 20.0
+scale_max = 2.0
+color = Color(0.920667, 0.572013, 3.85046e-07, 1)
+color_ramp = SubResource("GradientTexture1D_cxr5p")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_e80uo"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 30.0
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 98, 0)
+scale_min = 2.0
+scale_max = 4.0
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e80uo"]
 size = Vector2(14, 11.9999)
 
@@ -58,6 +85,18 @@ scale = Vector2(0.662163, 0.679054)
 sprite_frames = SubResource("SpriteFrames_5ncpa")
 animation = &"wheels"
 frame_progress = 0.334584
+
+[node name="DustEffect" type="GPUParticles2D" parent="Wheel"]
+position = Vector2(7.75518, 13.0547)
+amount = 10
+lifetime = 0.8
+process_material = SubResource("ParticleProcessMaterial_cxr5p")
+
+[node name="DustEffect2" type="GPUParticles2D" parent="Wheel"]
+position = Vector2(-8.85704, 13.0548)
+amount = 10
+lifetime = 0.8
+process_material = SubResource("ParticleProcessMaterial_cxr5p")
 
 [node name="Head" type="Node2D" parent="."]
 
@@ -109,6 +148,15 @@ frame = 2
 
 [node name="BulletSpawnPoint" type="Marker2D" parent="Head"]
 position = Vector2(-3.98199e-05, -11)
+
+[node name="FireEffect" type="GPUParticles2D" parent="Head"]
+position = Vector2(-3.98199e-05, -11)
+emitting = false
+amount = 5
+lifetime = 0.2
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_e80uo")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 8

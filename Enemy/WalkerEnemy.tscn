@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ch6h6i4bpgdws"]
+[gd_scene load_steps=14 format=3 uid="uid://ch6h6i4bpgdws"]
 
 [ext_resource type="Script" uid="uid://x5npio2g0qdu" path="res://Enemy/WalkerEnemy.gd" id="1_6grqf"]
 [ext_resource type="Texture2D" uid="uid://d08bdgi8bjo7b" path="res://Assets/Alienpng.png" id="2_vh5lm"]
@@ -56,6 +56,24 @@ animations = [{
 "speed": 8.0
 }]
 
+[sub_resource type="Gradient" id="Gradient_vh5lm"]
+offsets = PackedFloat32Array(0.311475, 0.663934)
+colors = PackedColorArray(0.988235, 0.490196, 0, 1, 0.604595, 0.226022, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2cne4"]
+gradient = SubResource("Gradient_vh5lm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_by3v0"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 80.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 4.0
+color = Color(1, 1, 0, 1)
+color_ramp = SubResource("GradientTexture1D_2cne4")
+
 [node name="WalkerEnemy" type="Area2D"]
 collision_layer = 2
 collision_mask = 12
@@ -72,6 +90,14 @@ scale = Vector2(1.25, 1.09375)
 sprite_frames = SubResource("SpriteFrames_6grqf")
 animation = &"walk"
 frame_progress = 0.451466
+
+[node name="DeathEffect" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 15
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_by3v0")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

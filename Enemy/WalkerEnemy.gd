@@ -1,11 +1,13 @@
 extends Area2D
 
-var speed = 50
+var speed = 110
 var health = 50
 var damage_per_second = 10
 var player = null
 @onready var damage_timer = $DamageTimer
 @onready var alien = $AnimatedSprite2D
+@onready var death_effect = $DeathEffect  # Added
+
 func _ready():
 	add_to_group("enemy")
 	player = get_tree().get_first_node_in_group("player")
@@ -36,4 +38,9 @@ func take_damage(damage: int):
 	# print("WalkerEnemy took ", damage, " damage. Remaining health: ", health)
 	if health <= 0:
 		print("WalkerEnemy destroyed!")
+		death_effect.emitting = true  # Trigger particles
+		alien.hide()  # Hide sprite
+		set_deferred("monitoring", false)
+		set_deferred("monitorable", false)
+		await get_tree().create_timer(death_effect.lifetime).timeout
 		queue_free()

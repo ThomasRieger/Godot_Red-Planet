@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 300
+@export var speed = 100
 @onready var cannon = $Head
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite
@@ -9,6 +9,9 @@ extends CharacterBody2D
 @onready var lazer_cannon_sprite = $Head/LazerSprite
 @onready var rocket_cannon_sprite = $Head/RocketCannonSprite
 @onready var bullet_spawn_point = $Head/BulletSpawnPoint
+@onready var fire_effect = $Head/FireEffect
+@onready var dust_effect = $Wheel/DustEffect
+@onready var dust_effect2 = $Wheel/DustEffect2  # Added
 var health = 100
 var weapons = [
 	{"name": "cannon", "ammo": -1},
@@ -37,6 +40,8 @@ func _ready():
 	emit_signal("health_changed", health)
 	emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 	body.play("wheels")
+	dust_effect.emitting = false
+	dust_effect2.emitting = false  # Start with dust off
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
@@ -45,6 +50,10 @@ func _physics_process(delta):
 	velocity = direction.normalized() * speed
 	move_and_slide()
 
+	# Control dust effect
+	dust_effect.emitting = direction.length() > 0
+	dust_effect2.emitting = direction.length() > 0
+	
 	var mouse_pos = get_global_mouse_position()
 	var cannon_direction = (mouse_pos - global_position).normalized()
 	cannon.rotation = cannon_direction.angle()
@@ -95,6 +104,25 @@ func _input(event):
 func shoot():
 	if not can_shoot:
 		return
+
+	# Configure firing effect
+	match weapons[current_weapon]["name"]:
+		"cannon":
+			fire_effect.process_material.color = Color.WHITE
+			fire_effect.amount = 5
+		"machine_gun":
+			fire_effect.process_material.color = Color.YELLOW
+			fire_effect.amount = 8
+		"shotgun":
+			fire_effect.process_material.color = Color.ORANGE
+			fire_effect.amount = 10
+		"lazer_cannon":
+			fire_effect.process_material.color = Color.BLUE
+			fire_effect.amount = 6
+		"rocket_cannon":
+			fire_effect.process_material.color = Color.RED
+			fire_effect.amount = 7
+	fire_effect.restart()
 
 	if weapons[current_weapon]["name"] == "cannon":
 		var bullet = bullet_scene.instantiate()
