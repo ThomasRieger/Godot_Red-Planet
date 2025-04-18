@@ -1,8 +1,8 @@
 extends Area2D
 
-var speed = 90
+var speed = 75
 var health = 10
-var damage_per_second = 10
+var damage_per_second = 5
 var player = null
 @onready var damage_timer = $DamageTimer
 @onready var alien = $AnimatedSprite2D
@@ -11,12 +11,22 @@ var player = null
 func _ready():
 	add_to_group("enemy")
 	player = get_tree().get_first_node_in_group("player")
-	# print("WalkerEnemy initialized at position: ", global_position, " in group 'enemy'")
+	var despawn_timer = Timer.new()
+	despawn_timer.wait_time = 60 # 1 minutes
+	despawn_timer.one_shot = true
+	despawn_timer.connect("timeout", _on_despawn_timeout)
+	add_child(despawn_timer)
+	despawn_timer.start()
+
 
 func _physics_process(delta):
 	if player:
 		var direction = (player.global_position - global_position).normalized()
 		position += direction * speed * delta
+		if player.position.x < position.x:
+			alien.flip_h = true
+		else:
+			alien.flip_h = false
 		# rotation = direction.angle() + deg_to_rad(90)
 		alien.play("walk")
 
@@ -43,4 +53,8 @@ func take_damage(damage: int):
 		set_deferred("monitoring", false)
 		set_deferred("monitorable", false)
 		await get_tree().create_timer(death_effect.lifetime).timeout
+		queue_free()
+
+func _on_despawn_timeout() -> void:
+	if is_instance_valid(self):
 		queue_free()

@@ -7,6 +7,7 @@
 radius = 5.0
 
 [node name="RocketCannonPickup" type="Area2D"]
+scale = Vector2(2, 2)
 collision_layer = 9
 collision_mask = 8
 script = ExtResource("1_4y3f5")

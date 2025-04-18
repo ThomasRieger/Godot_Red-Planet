@@ -10,6 +10,7 @@ var star = preload("res://Room/star.tscn")
 @onready var survive_label = $survive_label
 @onready var press_label = $press_label
 @onready var crash_label = $crash_label
+@onready var end_screen = $"../end_screen"
 var original_ship_pos = Vector2(480, 270)
 
 var gen_star_direction = 10
@@ -22,7 +23,9 @@ func _ready() -> void:
 	updown_ship()
 	gen_star()
 	self.visible = true
-	#gen_star
+	# Ensure end_screen is initially transparent and invisible
+	end_screen.modulate.a = 0
+	end_screen.visible = false
 	get_tree().paused = true
 	set_process_input(true)
 
@@ -109,6 +112,8 @@ func start_title_animation():
 	get_tree().paused = false
 
 func win() -> void:
+	set_process_input(false)
+	get_tree().paused = false  # Unpause to allow tweens
 	var tween = create_tween()
 	tween.tween_property(get_parent(), "modulate:a", 1, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	star_ship.position = Vector2(740, 270)
@@ -130,3 +135,13 @@ func win() -> void:
 	tween3.tween_property(planet, "position:x", 7500, 2.5).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	gen_star()
 	survive_blink()
+	await get_tree().create_timer(7).timeout
+	print("ended")
+	
+	# Fade to black
+	end_screen.visible = true
+	end_screen.modulate.a = 0 
+	var tween4 = create_tween()
+	tween4.tween_property(end_screen, "modulate:a", 1, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await tween4.finished
+	get_tree().reload_current_scene()

@@ -71,11 +71,6 @@ func _ready():
 	else:
 		print("Error: RocketSilo is not in group 'silo'!")
 
-	# Position the DummyEnemy in a nearby room (6, 6)
-	#var dummy_enemy = get_node("DummyEnemy")
-	#if dummy_enemy:
-		#dummy_enemy.position = Vector2(1950, 1950)
-
 	# Spawn rocket parts
 	spawn_rocket_parts()
 
@@ -286,6 +281,9 @@ func _on_weapon_pickup_timer_timeout():
 # Added: Function to handle pickup collection
 func _on_weapon_pickup_collected(body: Node, pickup: Node):
 	if body.is_in_group("player"):
+		# Restore 10 health, capped at 100
+		player.health = min(player.health + 10, 100)
+		player.emit_signal("health_changed", player.health)
 		weapon_pickups.erase(pickup)
 		minimap.update_weapon_pickups(weapon_pickups)
 		pickup.queue_free()

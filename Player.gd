@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 100
+@export var speed = 600
 @onready var cannon = $Head
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite
@@ -160,7 +160,7 @@ func shoot():
 	elif weapons[current_weapon]["name"] == "shotgun" and weapons[current_weapon]["ammo"] > 0:
 		var base_direction = (get_global_mouse_position() - global_position).normalized()
 		var spread_angle = deg_to_rad(30)
-		var pellet_count = 6
+		var pellet_count = 8
 		var angle_step = spread_angle / (pellet_count - 1) if pellet_count > 1 else 0
 		
 		for i in range(pellet_count):
@@ -266,4 +266,4 @@ func take_damage(damage: int):
 	health -= damage
 	emit_signal("health_changed", health)
 	if health <= 0:
-		get_tree().quit()
+		get_tree().reload_current_scene()

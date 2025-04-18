@@ -80,6 +80,7 @@ collision_mask = 12
 script = ExtResource("1_6grqf")
 
 [node name="DamageTimer" type="Timer" parent="."]
+wait_time = 0.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vh5lm")
@@ -99,6 +100,10 @@ one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_by3v0")
 
+[node name="Despawn" type="Timer" parent="."]
+wait_time = 60.0
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
 [connection signal="timeout" from="DamageTimer" to="." method="_on_damage_timer_timeout"]
+[connection signal="timeout" from="Despawn" to="." method="_on_despawn_timeout"]

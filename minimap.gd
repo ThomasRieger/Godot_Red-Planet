@@ -20,7 +20,7 @@ func _draw():
 		var pickup_pos = pickup.global_position
 		var scaled_pos = (pickup_pos / map_size) * minimap_size
 		var pickup_rect = Rect2(scaled_pos - Vector2(2.5, 2.5), Vector2(5, 5))
-		draw_rect(pickup_rect, Color.PINK)
+		draw_rect(pickup_rect, Color.BLUE)
 
 	# Draw rocket silo
 	var scaled_silo_pos = (silo_position / map_size) * minimap_size

@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://pq8nt4v2oi31"]
 
-[ext_resource type="Texture2D" uid="uid://df8res1ykqdc4" path="res://icon.svg" id="1_8gkv3"]
 [ext_resource type="Script" uid="uid://brra1fm46wsqf" path="res://rocket_part.gd" id="1_xx0r3"]
+[ext_resource type="Texture2D" uid="uid://c5l0eghcb2bjt" path="res://Assets/rb_shup_part.png" id="2_dcseu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xx0r3"]
-size = Vector2(68, 64)
+size = Vector2(42, 42)
 
 [node name="RocketPart" type="Area2D"]
 collision_layer = 9
@@ -12,8 +12,8 @@ collision_mask = 8
 script = ExtResource("1_xx0r3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.546875, 0.53125)
-texture = ExtResource("1_8gkv3")
+scale = Vector2(2.125, 2)
+texture = ExtResource("2_dcseu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_xx0r3")
