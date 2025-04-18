@@ -10,7 +10,7 @@ radius = 17.1172
 offsets = PackedFloat32Array(0.311475, 0.622951)
 colors = PackedColorArray(0.988805, 0.988806, 7.70092e-07, 1, 0.604595, 0.226022, 0, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_oprss"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_y56e4"]
 gradient = SubResource("Gradient_y56e4")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_60dua"]
@@ -22,7 +22,7 @@ gravity = Vector3(0, 98, 0)
 scale_min = 2.0
 scale_max = 5.0
 color = Color(1, 1, 0, 1)
-color_ramp = SubResource("GradientTexture1D_oprss")
+color_ramp = SubResource("GradientTexture1D_y56e4")
 
 [node name="Explosion" type="Area2D"]
 collision_layer = 4

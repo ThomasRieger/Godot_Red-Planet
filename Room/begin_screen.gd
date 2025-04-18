@@ -11,6 +11,7 @@ var star = preload("res://Room/star.tscn")
 @onready var press_label = $press_label
 @onready var crash_label = $crash_label
 @onready var end_screen = $"../end_screen"
+@onready var star_ex = $VisualEffect
 var original_ship_pos = Vector2(480, 270)
 
 var gen_star_direction = 10
@@ -97,12 +98,13 @@ func start_title_animation():
 	tween3.tween_property(star_ship, "rotation", 5, 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	var tween4 = create_tween()
 	tween4.tween_property(star_ship, "position", star_ship.position + Vector2(100, 100), 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	
 	var tween5 = create_tween()
 	tween5.tween_property(star_ship, "modulate:a", 0, 1.5).set_trans(Tween.TRANS_SINE)
 	var tween6 = create_tween()
 	tween6.tween_property(crash_label, "modulate:a", 1, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(1.8).timeout
-	
+	star_ex.emitting = true
 	var tween7 = create_tween()
 	tween7.tween_property(get_parent(), "modulate:a", 0, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
@@ -144,4 +146,4 @@ func win() -> void:
 	var tween4 = create_tween()
 	tween4.tween_property(end_screen, "modulate:a", 1, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await tween4.finished
-	get_tree().reload_current_scene()
+	get_tree().call_deferred("reload_current_scene")

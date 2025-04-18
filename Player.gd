@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed = 600
+@export var speed = 700
 @onready var cannon = $Head
 @onready var body = $Wheel
 @onready var cannon_sprite = $Head/CannonSprite
@@ -11,10 +11,13 @@ extends CharacterBody2D
 @onready var bullet_spawn_point = $Head/BulletSpawnPoint
 @onready var fire_effect = $Head/FireEffect
 @onready var dust_effect = $Wheel/DustEffect
-@onready var dust_effect2 = $Wheel/DustEffect2  # Added
+@onready var dust_effect2 = $Wheel/DustEffect2
+@onready var explo = $VisualEffect
+@onready var Lable = $Label
 var health = 100
+var is_dead = false  # Added to prevent multiple reloads
 var weapons = [
-	{"name": "cannon", "ammo": -1},
+	{"name": "Gun", "ammo": -1},
 	{"name": "Empty", "ammo": 0},
 	{"name": "Empty", "ammo": 0},
 	{"name": "Empty", "ammo": 0},
@@ -41,7 +44,7 @@ func _ready():
 	emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 	body.play("wheels")
 	dust_effect.emitting = false
-	dust_effect2.emitting = false  # Start with dust off
+	dust_effect2.emitting = false
 
 func _physics_process(delta):
 	var direction = Vector2.ZERO
@@ -107,7 +110,7 @@ func shoot():
 
 	# Configure firing effect
 	match weapons[current_weapon]["name"]:
-		"cannon":
+		"Gun":
 			fire_effect.process_material.color = Color.WHITE
 			fire_effect.amount = 5
 		"machine_gun":
@@ -124,7 +127,7 @@ func shoot():
 			fire_effect.amount = 7
 	fire_effect.restart()
 
-	if weapons[current_weapon]["name"] == "cannon":
+	if weapons[current_weapon]["name"] == "Gun":
 		var bullet = bullet_scene.instantiate()
 		bullet.position = bullet_spawn_point.global_position
 		bullet.direction = (get_global_mouse_position() - global_position).normalized()
@@ -235,7 +238,7 @@ func shoot():
 		can_shoot = true
 
 func update_weapon_sprite():
-	cannon_sprite.visible = weapons[current_weapon]["name"] == "cannon" or weapons[current_weapon]["name"] == "Empty"
+	cannon_sprite.visible = weapons[current_weapon]["name"] == "Gun" or weapons[current_weapon]["name"] == "Empty"
 	machine_gun_sprite.visible = weapons[current_weapon]["name"] == "machine_gun"
 	shotgun_sprite.visible = weapons[current_weapon]["name"] == "shotgun"
 	lazer_cannon_sprite.visible = weapons[current_weapon]["name"] == "lazer_cannon"
@@ -258,12 +261,27 @@ func pickup_weapon(weapon_name: String, ammo: int):
 			emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 			return
 	if current_weapon != 0:
-		weapons[current_weapon] = {"name": weapon_name, "ammo": ammo}
+		weapons[current_weapon] = {"name": "wheel", "ammo": ammo}
 		update_weapon_sprite()
 		emit_signal("weapon_changed", current_weapon, weapons[current_weapon]["name"], weapons[current_weapon]["ammo"])
 
 func take_damage(damage: int):
+	if is_dead:
+		return  # Prevent further damage processing
+	
 	health -= damage
 	emit_signal("health_changed", health)
 	if health <= 0:
-		get_tree().reload_current_scene()
+		is_dead = true  # Mark as dead to prevent multiple reloads
+		Lable.visible = true
+		speed = 0
+		cannon.visible = false
+		body.visible = false
+		explo.emitting = true
+		await get_tree().create_timer(4).timeout
+		
+		# Check if tree is valid and reload deferred
+		if get_tree() != null:
+			get_tree().call_deferred("reload_current_scene")
+		else:
+			print("Error: Scene tree is null, cannot reload scene")
