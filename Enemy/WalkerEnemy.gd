@@ -1,7 +1,7 @@
 extends Area2D
 
-var speed = 110
-var health = 50
+var speed = 98
+var health = 40
 var damage_per_second = 10
 var player = null
 @onready var damage_timer = $DamageTimer

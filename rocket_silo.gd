@@ -3,7 +3,7 @@ extends Area2D
 signal parts_updated(current_parts: int)
 signal rocket_launched
 
-var required_parts: int = 1
+var required_parts: int = 6
 var current_parts: int = 0
 
 func _ready():
