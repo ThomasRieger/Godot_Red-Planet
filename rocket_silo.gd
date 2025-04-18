@@ -3,7 +3,7 @@ extends Area2D
 signal parts_updated(current_parts: int)
 signal rocket_launched
 
-var required_parts: int = 6
+var required_parts: int = 1
 var current_parts: int = 0
 
 func _ready():
@@ -20,5 +20,7 @@ func add_part():
 		print("Not enough parts yet: %d/%d" % [current_parts, required_parts])
 
 func launch_rocket():
+	get_node("../title_screen/title_screen/begin_screen").win()
 	print("Emitting rocket_launched signal")
-	emit_signal("rocket_launched")
+	#emit_signal("rocket_launched")
+	get_tree().paused = true

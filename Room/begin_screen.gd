@@ -7,11 +7,17 @@ var star = preload("res://Room/star.tscn")
 @onready var star_ship = $star_ship
 @onready var planet = $planet
 @onready var title_label = $title_label
+@onready var survive_label = $survive_label
 @onready var press_label = $press_label
 @onready var crash_label = $crash_label
 var original_ship_pos = Vector2(480, 270)
 
+var gen_star_direction = 10
+var gen_star_position = 1000
+
 func _ready() -> void:
+	gen_star_direction = 10
+	gen_star_position = 1000
 	press_blink()
 	updown_ship()
 	gen_star()
@@ -34,6 +40,15 @@ func press_blink() -> void:
 	await get_tree().create_timer(0.7).timeout
 	press_blink()
 
+func survive_blink() -> void:
+	if animation_started:
+		return
+	survive_label.visible = true
+	await get_tree().create_timer(1).timeout
+	survive_label.visible = false
+	await get_tree().create_timer(0.7).timeout
+	survive_blink()
+
 func updown_ship() -> void:
 	if animation_started:
 		return
@@ -50,10 +65,12 @@ func gen_star() -> void:
 		return
 	await get_tree().create_timer(rng.randf_range(0.01,0.5)).timeout
 	var new_star = star.instantiate()
-	new_star.position = Vector2(1000, rng.randi_range(0, 540))
+	
+	new_star.position = Vector2(gen_star_position, rng.randi_range(0, 540))
 	var star_id = rng.randi_range(0, 2)
 	new_star.get_child(0).frame = star_id
 	new_star.z_index = 10
+	new_star.speed_speed = gen_star_direction
 	match star_id:
 		0:
 			new_star.scale /= rng.randf_range(1, 2)
@@ -87,6 +104,29 @@ func start_title_animation():
 	tween7.tween_property(get_parent(), "modulate:a", 0, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
 	await get_tree().create_timer(1).timeout
+	crash_label.visible = false
 	get_node("../../../CanvasLayer").control_gone()
 	get_tree().paused = false
-	get_parent().get_parent().queue_free()
+
+func win() -> void:
+	var tween = create_tween()
+	tween.tween_property(get_parent(), "modulate:a", 1, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	star_ship.position = Vector2(740, 270)
+	star_ship.frame = 0
+	star_ship.rotation_degrees = 180
+	var tween1 = create_tween()
+	tween1.tween_property(star_ship, "modulate:a", 1, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	await get_tree().create_timer(1).timeout
+	
+	animation_started = false
+	updown_ship()
+	gen_star()
+	star_ship.frame = 1
+	gen_star_direction = -10
+	gen_star_position = 0
+	var tween2 = create_tween()
+	tween2.tween_property(star_ship, "position:x", 480, 3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var tween3 = create_tween()
+	tween3.tween_property(planet, "position:x", 7500, 2.5).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
+	gen_star()
+	survive_blink()

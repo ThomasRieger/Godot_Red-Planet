@@ -221,6 +221,7 @@ text = "OH NOOOO!!!!!!!!
 YOU CRASH INTO A RED PLANET"
 
 [node name="press_label" type="Label" parent="title_screen/title_screen/begin_screen"]
+visible = false
 z_index = 14
 layout_mode = 0
 offset_left = 275.0
@@ -230,6 +231,19 @@ offset_bottom = 722.0
 theme_override_fonts/font = ExtResource("8_5vw27")
 theme_override_font_sizes/font_size = 35
 text = "Press any key to start!"
+
+[node name="survive_label" type="Label" parent="title_screen/title_screen/begin_screen"]
+visible = false
+z_index = 14
+layout_mode = 0
+offset_left = 169.0
+offset_top = 415.0
+offset_right = 786.0
+offset_bottom = 724.0
+theme_override_fonts/font = ExtResource("8_5vw27")
+theme_override_font_sizes/font_size = 35
+text = "YOU SURVIVE!"
+horizontal_alignment = 1
 
 [node name="title_label" type="Label" parent="title_screen/title_screen/begin_screen"]
 z_index = 14
