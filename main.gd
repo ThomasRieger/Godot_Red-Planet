@@ -72,9 +72,9 @@ func _ready():
 		print("Error: RocketSilo is not in group 'silo'!")
 
 	# Position the DummyEnemy in a nearby room (6, 6)
-	var dummy_enemy = get_node("DummyEnemy")
-	if dummy_enemy:
-		dummy_enemy.position = Vector2(1950, 1950)
+	#var dummy_enemy = get_node("DummyEnemy")
+	#if dummy_enemy:
+		#dummy_enemy.position = Vector2(1950, 1950)
 
 	# Spawn rocket parts
 	spawn_rocket_parts()

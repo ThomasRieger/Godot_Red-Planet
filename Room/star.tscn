@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://r7giuq2nxdjn"]
+
+[ext_resource type="Script" uid="uid://bsjxmqctu4xs" path="res://Room/star.gd" id="1_q1mkg"]
+[ext_resource type="Texture2D" uid="uid://bygmo5utum1yh" path="res://Assets/rb_star.png" id="1_tb5rr"]
+
+[node name="star" type="Node2D"]
+script = ExtResource("1_q1mkg")
+
+[node name="RbStar" type="Sprite2D" parent="."]
+texture = ExtResource("1_tb5rr")
+hframes = 3
