@@ -6,6 +6,7 @@ var star = preload("res://Room/star.tscn")
 
 @onready var star_ship = $star_ship
 @onready var planet = $planet
+@onready var title_label = $title_label
 @onready var press_label = $press_label
 @onready var crash_label = $crash_label
 var original_ship_pos = Vector2(480, 270)
@@ -69,6 +70,8 @@ func start_title_animation():
 	tween.tween_property(planet, "position:x", 770, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	var tween2 = create_tween()
 	tween2.tween_property(star_ship, "position:x", 700, 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	var tweentitle = create_tween()
+	tweentitle.tween_property(title_label, "modulate:a", 0, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await get_tree().create_timer(1).timeout
 	var tween3 = create_tween()
 	tween3.tween_property(star_ship, "rotation", 5, 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
