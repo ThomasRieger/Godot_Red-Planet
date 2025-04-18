@@ -87,5 +87,6 @@ func start_title_animation():
 	tween7.tween_property(get_parent(), "modulate:a", 0, 1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	
 	await get_tree().create_timer(1).timeout
+	get_node("../../../CanvasLayer").control_gone()
 	get_tree().paused = false
 	get_parent().get_parent().queue_free()
